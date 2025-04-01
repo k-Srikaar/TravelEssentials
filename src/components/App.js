@@ -37,14 +37,14 @@ export default function App() {
 
   function handleDelet(delet_item) {
     console.log(initialItems);
-
+    console.log(delet_item);
     setinitialItems(
       initialItems.filter((item) => item.description !== delet_item)
     );
-    // console.log(initialItems);
+    console.log(initialItems);
   }
   function handleChanged(item_des) {
-    // console.log(item_des);
+    console.log(item_des);
 
     setinitialItems(
       initialItems.map((item) => {
@@ -89,7 +89,7 @@ function Logo() {
 }
 function Form(props) {
   return (
-    <form className="add-form" onSubmit={() => props.handleSubmit()}>
+    <form className="add-form" onSubmit={props.handleSubmit}>
       <h3> what you need 😍 for your trip? </h3>
       <select value={props.option} onChange={(e) => props.handleSelect(e)}>
         {Array.from({ length: 20 }, (_, i) => i + 1).map((num) => (
@@ -117,12 +117,12 @@ function Packinglists(props) {
           <Item
             item={item}
             key={item.id}
-            handleDelet={props.handleDelet}
-            handleChanged={props.handleChanged}
+            handleDelet={() => props.handleDelet(item.description)}
+            handleChanged={() => props.handleChanged(item.description)}
           />
         ))}
       </ul>
-      <button onClick={() => props.handleClear()}>Clear List</button>
+      <button onClick={props.handleClear}>Clear List</button>
     </div>
   );
 }
