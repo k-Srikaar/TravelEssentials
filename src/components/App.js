@@ -1,4 +1,8 @@
 import { useState } from "react";
+import Logo from "./Logo";
+import Form from "./Form";
+import Packinglists from "./Packinglists";
+import Stats from "./Stats";
 
 export default function App() {
   const [initialItems, setinitialItems] = useState([]);
@@ -32,6 +36,7 @@ export default function App() {
     };
     console.log(newval);
     setinitialItems([...initialItems, newval]);
+    setInput("");
     // handleADD(newval);
   }
 
@@ -59,7 +64,9 @@ export default function App() {
 
   function handleClear() {
     setinitialItems([]);
+    setInput("");
   }
+
   return (
     <div className="app">
       <Logo />
@@ -81,86 +88,5 @@ export default function App() {
       />
       <Stats initialItems={initialItems} />
     </div>
-  );
-}
-
-function Logo() {
-  return <h1> 🏝️ Far Away 🧳</h1>;
-}
-function Form(props) {
-  return (
-    <form className="add-form" onSubmit={props.handleSubmit}>
-      <h3> what you need 😍 for your trip? </h3>
-      <select value={props.option} onChange={(e) => props.handleSelect(e)}>
-        {Array.from({ length: 20 }, (_, i) => i + 1).map((num) => (
-          <option value={num} key={num}>
-            {num}
-          </option>
-        ))}
-      </select>
-      <input
-        type="text"
-        value={props.input_Val}
-        onChange={(e) => props.handleInput(e)}
-        placeholder="Item..."
-      />
-      <button onClick={() => props.handleAdds()}>Add</button>
-    </form>
-  );
-}
-function Packinglists(props) {
-  // console.log(props.initialItems.length);
-  return (
-    <div className="list">
-      <ul>
-        {props.initialItems.map((item) => (
-          <Item
-            item={item}
-            key={item.id}
-            handleDelet={() => props.handleDelet(item.description)}
-            handleChanged={() => props.handleChanged(item.description)}
-          />
-        ))}
-      </ul>
-      <button onClick={props.handleClear}>Clear List</button>
-    </div>
-  );
-}
-
-function Item({ item, handleDelet, handleChanged }) {
-  return (
-    <li>
-      <input
-        type="checkbox"
-        value={item.packed}
-        onChange={() => handleChanged(item.description)}
-      />
-      <span style={item.packed ? { textDecoration: "line-through" } : {}}>
-        {item.quantity}
-        {item.description}
-      </span>
-      <button onClick={() => handleDelet(item.description)}>❌</button>
-    </li>
-  );
-}
-function Stats({ initialItems }) {
-  let items = initialItems.length;
-  let count = 0;
-  for (let i = 0; i < items; i++) {
-    if (initialItems[i].packed) {
-      count = count + 1;
-    }
-  }
-
-  let packed = Math.round((count / items) * 100);
-  if (items === 0) {
-    packed = 0;
-  }
-  return (
-    <footer className="stats">
-      <em>Stats</em>
-      <hr />
-      {packed === 100 ? "Ready To Go 🚀" : `Percenatge of packed ${packed}`}
-    </footer>
   );
 }
