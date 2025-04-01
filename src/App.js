@@ -8,9 +8,39 @@ import { useState } from "react";
 
 export default function App() {
   const [initialItems, setinitialItems] = useState([]);
-  function handleADD(new_item) {
-    setinitialItems([...initialItems, new_item]);
+  const [option, setOption] = useState(1);
+  const [input_Val, setInput] = useState("");
+  function handleSubmit(e) {
+    e.preventDefault();
+    // console.log(e);
+    // This is written because , when we submit the form reload happens, to have a single page application we stop this.
   }
+
+  function handleSelect(e) {
+    setOption(Number(e.target.value));
+    // console.log(option);
+  }
+
+  function handleInput(e) {
+    setInput(e.target.value);
+    console.log(input_Val);
+  }
+  // function handleADD(new_item) {
+
+  // }
+
+  function handleAdds() {
+    let newval = {
+      id: initialItems.length + 1,
+      description: input_Val,
+      quantity: option,
+      packed: false,
+    };
+    console.log(newval);
+    setinitialItems([...initialItems, newval]);
+    // handleADD(newval);
+  }
+
   function handleDelet(delet_item) {
     console.log(initialItems);
 
@@ -32,14 +62,28 @@ export default function App() {
       })
     );
   }
+
+  function handleClear() {
+    setinitialItems([]);
+  }
   return (
     <div className="app">
       <Logo />
-      <Form initialItems={initialItems} handleADD={handleADD} />
+      <Form
+        initialItems={initialItems}
+        // handleADD={handleADD}
+        handleSubmit={handleSubmit}
+        handleSelect={handleSelect}
+        handleInput={handleInput}
+        handleAdds={handleAdds}
+        option={option}
+        input_Val={input_Val}
+      />
       <Packinglists
         initialItems={initialItems}
         handleDelet={handleDelet}
         handleChanged={handleChanged}
+        handleClear={handleClear}
       />
       <Stats initialItems={initialItems} />
     </div>
@@ -50,37 +94,10 @@ function Logo() {
   return <h1> 🏝️ Far Away 🧳</h1>;
 }
 function Form(props) {
-  const [option, setOption] = useState(1);
-  const [input_Val, setInput] = useState("");
-  function handleSubmit(e) {
-    e.preventDefault();
-    // console.log(e);
-    // This is written because , when we submit the form reload happens, to have a single page application we stop this.
-  }
-
-  function handleSelect(e) {
-    setOption(Number(e.target.value));
-    // console.log(option);
-  }
-
-  function handleInput(e) {
-    setInput(e.target.value);
-    // console.log(input_Val)
-  }
-
-  function handleAdds() {
-    let newval = {
-      id: props.initialItems.length + 1,
-      description: input_Val,
-      quantity: option,
-      packed: false,
-    };
-    props.handleADD(newval);
-  }
   return (
-    <form className="add-form" onSubmit={handleSubmit}>
+    <form className="add-form" onSubmit={() => props.handleSubmit()}>
       <h3> what you need 😍 for your trip? </h3>
-      <select value={option} onChange={handleSelect}>
+      <select value={props.option} onChange={(e) => props.handleSelect(e)}>
         {Array.from({ length: 20 }, (_, i) => i + 1).map((num) => (
           <option value={num} key={num}>
             {num}
@@ -89,11 +106,11 @@ function Form(props) {
       </select>
       <input
         type="text"
-        value={input_Val}
-        onChange={handleInput}
+        value={props.input_Val}
+        onChange={(e) => props.handleInput(e)}
         placeholder="Item..."
       />
-      <button onClick={handleAdds}>Add</button>
+      <button onClick={() => props.handleAdds()}>Add</button>
     </form>
   );
 }
@@ -111,6 +128,7 @@ function Packinglists(props) {
           />
         ))}
       </ul>
+      <button onClick={() => props.handleClear()}>Clear List</button>
     </div>
   );
 }
